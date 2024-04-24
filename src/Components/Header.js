@@ -42,7 +42,7 @@ function Header() {
                 </a>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="#team">
+                <a className="nav-link" href="#contact">
                   Contact
                 </a>
               </li>
