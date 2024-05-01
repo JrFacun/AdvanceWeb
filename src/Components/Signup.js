@@ -10,7 +10,7 @@ export const Signup = () => {
     const [fullName, setFullName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-
+    const [address, setAddress] = useState("");
     const [errorMsg, setErrorMsg] = useState("");
     const [successMsg, setSuccessMsg] = useState("");
 
@@ -21,6 +21,7 @@ export const Signup = () => {
                 const ref = doc(fs, "tblUsers", userCredential.user.uid);
                 const docRef = await setDoc(ref, {
                     FullName: fullName,
+                    Address: address,
                     Email: email,
                     Password: password,
                 })
@@ -29,6 +30,7 @@ export const Signup = () => {
                             "Signup Successful. You will now redirected to Login"
                         );
                         setFullName("");
+                        setAddress("");
                         setEmail("");
                         setPassword("");
                         setErrorMsg("");
@@ -113,6 +115,21 @@ export const Signup = () => {
                                                 </label>
                                             </div>
                                         </div>
+                                        {/* Address textarea */}
+                                        <div data-mdb-input-init className="form-outline mb-4">
+                                            <textarea
+                                                id="form3Example3"
+                                                className="form-control"
+                                                rows="4" // Adjust the number of rows as needed
+                                                required
+                                                onChange={(e) => setAddress(e.target.value)}
+                                                value={address}
+                                            />
+                                            <label className="form-label" htmlFor="form3Example3">
+                                                Address
+                                            </label>
+                                        </div>
+
                                         {/* Email input */}
                                         <div data-mdb-input-init className="form-outline mb-4">
                                             <input
@@ -155,7 +172,7 @@ export const Signup = () => {
                                         <div className="text-center">
                                             <span>
                                                 Already has an account login{" "}
-                                                <Link to="/login" className="link">
+                                                <Link to="/" className="link">
                                                     Here
                                                 </Link>
                                             </span>
