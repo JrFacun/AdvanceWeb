@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { storage, fs } from '../Components/Config/Firebase'
 import { ref, getDownloadURL, uploadBytes } from 'firebase/storage'
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
@@ -9,6 +10,7 @@ export const AddProducts = () => {
     const [price, setPrice] = useState('');
     const [qty, setQty] = useState('');
     const [image, setImage] = useState(null);
+    const [imageUrl, setImageUrl] = useState('');
 
     const [imageError, setImageError] = useState('');
     const [successMsg, setSuccessMsg] = useState('');
@@ -22,9 +24,11 @@ export const AddProducts = () => {
         if (selectedFile) {
             if (selectedFile && types.includes(selectedFile.type)) {
                 setImage(selectedFile);
+                setImageUrl(URL.createObjectURL(selectedFile)); // Set URL for preview
                 setImageError('');
             } else {
                 setImage(null);
+                setImageUrl('');
                 setImageError('Please select a valid file Type! (png or jpeg)')
             }
         } else {
@@ -52,6 +56,8 @@ export const AddProducts = () => {
                         setPrice('');
                         setQty('');
                         document.getElementById('file').value = '';
+                        setImage(null);
+                        setImageUrl('');
                         setImageError('');
                         setUploadError('');
                         setTimeout(() => {
@@ -63,13 +69,15 @@ export const AddProducts = () => {
         }
     }
 
-
     return (
         <div className="container">
-            <br></br>
-            <br></br>
-            <h1>Add Products</h1>
-            <hr></hr>
+            <br />
+            <br />
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <h1>Add Products</h1>
+                <Link to="/home" className="btn btn-primary">Back to Home</Link>
+            </div>
+            <hr />
 
             {successMsg && <>
                 <div className="success-msg">{successMsg}</div>
@@ -78,36 +86,38 @@ export const AddProducts = () => {
                 <label>Product Title</label>
                 <input type="text" className="form-control" required
                     onChange={(e) => setTitle(e.target.value)} value={title}></input>
-                <br></br>
+                <br />
                 <label>Product Description</label>
                 <input type="text" className="form-control" required
                     onChange={(e) => setDescription(e.target.value)} value={description}></input>
-                <br></br>
+                <br />
                 <label>Product Price</label>
                 <input type="number" className="form-control" required
                     onChange={(e) => setPrice(e.target.value)} value={price}></input>
-                <br></br>
+                <br />
                 <label>Product Qty</label>
                 <input type="number" className="form-control" required
                     onChange={(e) => setQty(e.target.value)} value={qty}></input>
-                <br></br>
+                <br />
                 <label>Upload Product Image</label>
                 <input type="file" id="file" className="form-control" required
-                    onChange={handleProductsImg} ></input>
+                    onChange={handleProductsImg}></input>
+                {imageUrl && <img src={imageUrl} alt="Preview" style={{ maxWidth: '25%', maxHeight: '25%', marginTop: '10px', marginBottom: '10px', marginLeft: '500px' }} />}
                 {imageError && <>
-                    <br></br>
+                    <br />
                     <div className="error-msg">{imageError}</div>
                 </>}
-                <br></br>
+                <br />
 
                 <div style={{ display: "flex", justifyContent: 'flex-end' }}>
                     <button type="submit" className="btn btn-success btn-md">
                         SUBMIT
                     </button>
                 </div>
+                <br></br>
             </form>
             {uploadError && <>
-                <br></br>
+                <br />
                 <div className="error-msg">{uploadError}</div>
             </>}
         </div>

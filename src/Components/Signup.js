@@ -34,7 +34,7 @@ export const Signup = () => {
                         setErrorMsg("");
                         setTimeout(() => {
                             setSuccessMsg("");
-                            navigate("/login");
+                            navigate("/");
                         }, 3000);
                     })
                     .catch((error) => setErrorMsg(error.message));
