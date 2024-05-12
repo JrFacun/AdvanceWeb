@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { fs } from '../Components/Config/Firebase'
+import { auth, fs } from '../Components/Config/Firebase'
 import { collection, getDocs } from 'firebase/firestore';
 import { Link } from "react-router-dom";
 
 export const Products = () => {
     const [products, setProducts] = useState([]);
-
     useEffect(() => {
         const fetchProducts = async () => {
             const productsCollectionRef = collection(fs, 'tblProducts');
@@ -38,26 +37,31 @@ export const Products = () => {
                         </a>
                     </div>
                     <br></br>
-                    <div className="row">
-                        {products.map(product => (
-                            <div key={product.id} className="col-lg-4 col-sm-6 mb-4">
-                                <div className="portfolio-item">
-                                    <a className="portfolio-link" data-bs-toggle="modal" href={`#portfolioModal${product.id}`}>
-                                        <div className="portfolio-hover">
-                                            <div className="portfolio-hover-content"><i className="fas fa-plus fa-3x" /></div>
-                                        </div>
-                                        <img className="img-fluid" src={product.prodURL} alt="..." />
-                                    </a>
-                                    <div className="portfolio-caption">
-                                        <div className="portfolio-caption-heading">{product.prodTitle}</div>
-                                        {/* <div className="portfolio-caption-subheading text-muted">{product.prodDesc}</div>
+                    {products.length > 0 && (
+                        <div className="row">
+                            {products.map(product => (
+                                <div key={product.id} className="col-lg-4 col-sm-6 mb-4">
+                                    <div className="portfolio-item">
+                                        <a className="portfolio-link" data-bs-toggle="modal" href={`#portfolioModal${product.id}`}>
+                                            <div className="portfolio-hover">
+                                                <div className="portfolio-hover-content"><i className="fas fa-plus fa-3x" /></div>
+                                            </div>
+                                            <img className="img-fluid" src={product.prodURL} alt="..." />
+                                        </a>
+                                        <div className="portfolio-caption">
+                                            <div className="portfolio-caption-heading">{product.prodTitle}</div>
+                                            {/* <div className="portfolio-caption-subheading text-muted">{product.prodDesc}</div>
                                         <div className="portfolio-caption-subheading text-muted">Price: {product.prodPrice}</div>
                                         <div className="portfolio-caption-subheading text-muted">Qty: {product.prodQty}</div> */}
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
-                    </div>
+                            ))}
+                        </div>
+                    )}
+                    {products.length < 1 && (
+                        <div className="container-fluid"> Please Wait..... </div>
+                    )}
                 </div>
             </section>
 

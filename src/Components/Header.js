@@ -9,9 +9,9 @@ function Header() {
         id="mainNav"
       >
         <div className="container">
-          <a className="navbar-brand" href="#page-top">
+          <Link className="navbar-brand" to='/home'>
             <img src="assets/img/navbar-logo.svg" alt="..." />
-          </a>
+          </Link>
           <button
             className="navbar-toggler"
             type="button"
@@ -32,9 +32,9 @@ function Header() {
                 </a>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="#portfolio">
-                  Products
-                </a>
+                <Link className="nav-link" to='/add-products'>
+                  Add Products
+                </Link>
               </li>
               <li className="nav-item">
                 <a className="nav-link" href="#about">
@@ -45,6 +45,11 @@ function Header() {
                 <a className="nav-link" href="#contact">
                   Contact
                 </a>
+              </li>
+              <li className="nav-item">
+                <Link class="nav-link" to='/add-location'>
+                  Add Location
+                </Link>
               </li>
               <li className="nav-item">
                 <Link to="/" className="nav-link">
