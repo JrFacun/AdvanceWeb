@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { auth, fs } from "./Config/Firebase";
 import { useNavigate } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import Home from "./Home";
 
 export const Login = () => {
     const navigate = useNavigate();
@@ -39,9 +40,10 @@ export const Login = () => {
                                 style={{ color: "hsl(218, 81%, 95%)" }}
                             >
                                 Advance <br />
-                                <span style={{ color: "hsl(218, 81%, 75%)" }}>
+                                <Link to='/'><span style={{ color: "hsl(218, 81%, 75%)" }}>
                                     Web Development
                                 </span>
+                                </Link>
                             </h1>
                             <p
                                 className="mb-4 opacity-70"

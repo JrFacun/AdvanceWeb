@@ -7,6 +7,7 @@ import NotFound from './Components/NotFound';
 import { AddProducts } from './Components/AddProducts';
 import UpdateProduct from './Components/UpdateProduct';
 import AddLocation from './Components/AddLocation';
+import Cart from './Components/Cart';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="/add-products" element={<AddProducts />} />
           <Route path="/update-products" element={<UpdateProduct />} />
           <Route path="/add-location" element={<AddLocation />} />
+          <Route path="/cart" element={<Cart />} />
           <Route exact path="/" element={<Home />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

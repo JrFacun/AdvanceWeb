@@ -1,23 +1,73 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { auth } from "./Config/Firebase";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { auth, fs } from "./Config/Firebase";
+import { collection, getDocs, doc, getDoc } from "firebase/firestore";
+import { onAuthStateChanged } from "firebase/auth";
 
-function Header({ user }) {
+function Header() {
+  const [cart, setCart] = useState([]);
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      if (currentUser) {
+        const userDocRef = doc(fs, "tblUsers", currentUser.uid);
+        const userDoc = await getDoc(userDocRef);
+        if (userDoc.exists()) {
+          setUser({ uid: currentUser.uid, ...userDoc.data() });
+        } else {
+          console.error("No such user document!");
+        }
+      } else {
+        setUser(null);
+      }
+    });
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    const fetchCart = async () => {
+      if (user) {
+        try {
+          const cartCollectionRef = collection(fs, `tblUsers/${user.uid}/tblBucket`);
+          const snapshot = await getDocs(cartCollectionRef);
+          const cartData = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          }));
+          setCart(cartData);
+        } catch (error) {
+          console.error("Error fetching cart: ", error);
+        }
+      }
+    };
+
+    fetchCart();
+  }, [user]);
+
   const handleLogout = async () => {
     try {
       await auth.signOut();
+      navigate("/login");
     } catch (error) {
       console.error("Error signing out: ", error);
+    }
+  };
+
+  const handleCartClick = () => {
+    if (!user) {
+      alert("Please Login First!");
+      navigate("/login");
+    } else {
+      navigate("/cart");
     }
   };
 
   return (
     <div>
       {/* Navigation */}
-      <nav
-        className="navbar navbar-expand-lg navbar-dark fixed-top"
-        id="mainNav"
-      >
+      <nav className="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
         <div className="container">
           <Link className="navbar-brand" to="/">
             <img src="assets/img/navbar-logo.svg" alt="..." />
@@ -36,7 +86,6 @@ function Header({ user }) {
           </button>
           <div className="collapse navbar-collapse" id="navbarResponsive">
             <ul className="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
-
               <li className="nav-item">
                 <a className="nav-link" href="#about">
                   About
@@ -58,12 +107,9 @@ function Header({ user }) {
                       data-bs-toggle="dropdown"
                       aria-expanded="false"
                     >
-                      Welcome, {user}
+                      Welcome, {user.FullName}
                     </a>
-                    <ul
-                      className="dropdown-menu"
-                      aria-labelledby="userDropdown"
-                    >
+                    <ul className="dropdown-menu" aria-labelledby="userDropdown">
                       <li className="nav-item">
                         <Link className="dropdown-item" to="/add-products">
                           Add Products
@@ -75,10 +121,7 @@ function Header({ user }) {
                         </Link>
                       </li>
                       <li>
-                        <button
-                          className="dropdown-item"
-                          onClick={handleLogout}
-                        >
+                        <button className="dropdown-item" onClick={handleLogout}>
                           Logout
                         </button>
                       </li>
@@ -91,9 +134,10 @@ function Header({ user }) {
                 )}
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/bu">
+                <a className="nav-link" href="#" onClick={handleCartClick}>
                   <i className="fas fa-shopping-cart"></i>
-                </Link>
+                  {user && cart.length > 0 && <span className="badge bg-secondary">{cart.length}</span>}
+                </a>
               </li>
             </ul>
           </div>
@@ -103,9 +147,7 @@ function Header({ user }) {
       <header className="masthead">
         <div className="container">
           <div className="masthead-subheading">Welcome To Our Studio!</div>
-          <div className="masthead-heading text-uppercase">
-            It's Nice To Meet You
-          </div>
+          <div className="masthead-heading text-uppercase">It's Nice To Meet You</div>
           <a className="btn btn-primary btn-xl text-uppercase" href="#services">
             Tell Me More
           </a>
