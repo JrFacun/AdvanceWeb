@@ -41,12 +41,16 @@ const Cart = () => {
             <Header />
             <br></br>
             <div className="container">
-                <h2 className="section-heading text-uppercase">Cart</h2>
+                <h2 className="section-heading text-uppercase text-center">Borrow</h2>
+                <div className="portfolio-caption-subheading text-muted text-center">Items Borrowed</div>
+                <br></br>
                 <div className="row">
                     {cart.map((product, index) => (
                         <div key={index} className="col-lg-4 col-sm-6 mb-4">
                             <div className="portfolio-item">
-                                <img className="img-fluid" src={product.prodURL} alt="..." />
+                                <div className="portfolio-link">
+                                    <img className="img-fluid" src={product.prodURL} alt="..." />
+                                </div>
                                 <div className="portfolio-caption">
                                     <div className="portfolio-caption-heading">{product.prodTitle}</div>
                                     <div className="portfolio-caption-subheading text-muted">{product.prodDesc}</div>
