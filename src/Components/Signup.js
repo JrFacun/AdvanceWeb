@@ -36,7 +36,7 @@ export const Signup = () => {
                         setErrorMsg("");
                         setTimeout(() => {
                             setSuccessMsg("");
-                            navigate("/");
+                            navigate("/login");
                         }, 3000);
                     })
                     .catch((error) => setErrorMsg(error.message));
@@ -172,7 +172,7 @@ export const Signup = () => {
                                         <div className="text-center">
                                             <span>
                                                 Already has an account login{" "}
-                                                <Link to="/" className="link">
+                                                <Link to="/login" className="link">
                                                     Here
                                                 </Link>
                                             </span>

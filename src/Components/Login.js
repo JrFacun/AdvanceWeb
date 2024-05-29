@@ -22,7 +22,7 @@ export const Login = () => {
             setErrorMsg('');
             setTimeout(() => {
                 setSuccessMsg('');
-                navigate('/home');
+                navigate('/');
             }, 3000);
         }).catch(error => setErrorMsg(error.message));
 
