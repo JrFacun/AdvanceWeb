@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { auth, fs } from "./Config/Firebase";
-import { collection, getDocs, doc, getDoc } from "firebase/firestore";
+import { collection, onSnapshot, doc, getDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 
 function Header() {
@@ -27,29 +27,26 @@ function Header() {
   }, []);
 
   useEffect(() => {
-    const fetchCart = async () => {
-      if (user) {
-        try {
-          const cartCollectionRef = collection(fs, `tblUsers/${user.uid}/tblBucket`);
-          const snapshot = await getDocs(cartCollectionRef);
-          const cartData = snapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-          }));
-          setCart(cartData);
-        } catch (error) {
-          console.error("Error fetching cart: ", error);
-        }
-      }
-    };
-
-    fetchCart();
+    let unsubscribe;
+    if (user) {
+      const cartCollectionRef = collection(fs, `tblUsers/${user.uid}/tblBucket`);
+      unsubscribe = onSnapshot(cartCollectionRef, (snapshot) => {
+        const cartData = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        setCart(cartData);
+      }, (error) => {
+        console.error("Error fetching cart: ", error);
+      });
+    }
+    return () => unsubscribe && unsubscribe();
   }, [user]);
 
   const handleLogout = async () => {
     try {
       await auth.signOut();
-      navigate("/login");
+      navigate("/");
     } catch (error) {
       console.error("Error signing out: ", error);
     }

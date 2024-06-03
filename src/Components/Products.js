@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { auth, fs } from './Config/Firebase';
-import { collection, getDocs, doc, setDoc } from 'firebase/firestore';
+import { collection, onSnapshot, doc, setDoc } from 'firebase/firestore';
 import { useNavigate } from "react-router-dom";
 import CartContext from './CartContext';
 
@@ -13,20 +13,17 @@ const Products = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const fetchProducts = async () => {
-            try {
-                const productsCollectionRef = collection(fs, 'tblProducts');
-                const snapshot = await getDocs(productsCollectionRef);
-                const productsData = snapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data()
-                }));
-                setProducts(productsData);
-            } catch (error) {
-                window.alert("Error fetching products: " + error.message);
-            }
-        };
-        fetchProducts();
+        const unsubscribe = onSnapshot(collection(fs, 'tblProducts'), (snapshot) => {
+            const productsData = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            setProducts(productsData);
+        }, (error) => {
+            window.alert("Error fetching products: " + error.message);
+        });
+
+        return () => unsubscribe();
     }, []);
 
     useEffect(() => {
@@ -50,8 +47,6 @@ const Products = () => {
             window.alert("Please Login First!");
             navigate('/login');
         } else {
-            const confirmAdd = window.confirm("Do you want to add this product to your bucket?");
-            if (!confirmAdd) return;
 
             const existingProduct = cart.find(item => item.id === product.id);
             let borrowedProduct;
@@ -71,7 +66,6 @@ const Products = () => {
                     const userBucketDocRef = doc(fs, 'tblUsers', user.uid, 'tblBucket', product.id);
                     await setDoc(userBucketDocRef, borrowedProduct, { merge: true });
                     window.alert("Product has been added to your bucket!");
-                    window.location.reload();
                 } catch (error) {
                     window.alert("Error adding product to bucket: " + error.message);
                 }
@@ -141,8 +135,8 @@ const Products = () => {
                                             <h2 className="text-uppercase">{selectedProduct.prodTitle}</h2>
                                             <img className="img-fluid d-block mx-auto" src={selectedProduct.prodURL} alt="..." />
                                             <p>{selectedProduct.prodDesc}</p>
-                                            <button className="btn-borrow" onClick={() => handleBorrowClick(selectedProduct)}>Borrow</button>
-                                            <button className="btn-close" onClick={closeModals}>Close</button>
+                                            <button className=" btn btn-primary" onClick={() => handleBorrowClick(selectedProduct)}>Borrow</button>
+                                            <br></br>
                                         </div>
                                     </div>
                                 </div>
@@ -167,8 +161,8 @@ const Products = () => {
                                             <p>
                                                 You need to be logged in to borrow items. Please login to continue.
                                             </p>
-                                            <button className="btn-login" onClick={() => navigate('/login')}>Login</button>
-                                            <button className="btn-close" onClick={closeModals}>Close</button>
+                                            <button className="btn btn-primary" onClick={() => navigate('/login')}>Login</button>
+
                                         </div>
                                     </div>
                                 </div>
