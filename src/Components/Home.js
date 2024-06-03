@@ -25,6 +25,7 @@ export const Home = () => {
     return (
         <>
             <Header user={user} />
+
             <Body />
             <Footer />
         </>
