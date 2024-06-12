@@ -62,9 +62,10 @@ const Cart = () => {
                     ))}
                     {cart.length === 0 && <p className="text-center">Your cart is empty.</p>}
                 </div>
+                {cart.length === 0 && <p>Your cart is empty.</p>}
                 {/* <div className="cart-summary">
                     <div>Total: ₱{cart.reduce((acc, item) => acc + item.prodPrice * item.prodQty, 0)}</div>
-                    <button className="btn btn-primary ">Borrow</button>
+                    <button className="btn btn-primary btn-block">Borrow</button>
                 </div> */}
             </div>
         </div>
